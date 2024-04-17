@@ -39,7 +39,9 @@ function FCFS(Processes){
     if(Processes.length>0)
     {
         avgTAT/=Processes.length;
+        avgTAT=avgTAT.toFixed(2);
         avgWT/=Processes.length;
+        avgWT=avgWT.toFixed(2);
         addProcessToTable("","","","","",`AvgTAT = ${avgTAT}`,`AvgWT = ${avgWT}`);
     }
 }
