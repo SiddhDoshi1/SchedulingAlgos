@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduling Algorithm</title>
+    <style>
+        /* Add your CSS styles here */
+        /* This is just a basic layout example */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #processTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        #processTable th {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ccc;
+            background-color: #007bff;
+            color: #fff;
+            height: 40px;
+        }
+
+        #processTable td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        #processTable .deleteCell {
+            text-align: center;
+        }
+
+        #processTable .deleteBtn {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #processTable .deleteBtn:hover {
+            background-color: #c82333; 
+        }
+
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .form-row label {
+            width: 120px;
+        }
+        .form-row input[type="text"],
+        .form-row select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .add-process-button {
+            align-self: flex-start;
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .add-process-button:hover {
+            background-color: #0056b3;
+        }
+        #Gantt_Chart {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #Gantt_Chart li {
+            display: inline-block;
+            min-width: 60px; 
+            width: 60px;
+            height: 30px;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        #Gantt_Chart li.blue {
+            background-color: blue;
+        }
+
+        #Gantt_Chart li.red {
+            background-color: red;
+        }
+
+        #Gantt_Chart1 {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #Gantt_Chart1 li {
+            display: inline-block;
+            min-width: 60px;
+            width: 60px;
+            height: 30px;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        #Gantt_Chart1 li.blue {
+            background-color: blue;
+        }
+
+        #Gantt_Chart1 li.red {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Scheduling Algorithm - Process Table</h1>
+        <form id="addProcessForm">
+            <div class="form-row">
+                <label for="Priority" id="label_p" style="display: none;">Priority:</label>
+                <input type="text" id="Priority" style="display: none;">
+                <label for="processName">Process Name:</label>
+                <input type="text" id="processName" name="processName" required>
+                <label for="arrivalTime">Arrival Time:</label>
+                <input type="text" id="arrivalTime" name="arrivalTime" required>
+            </div>
+            <div class="form-row">
+                <label for="burstTime">Burst Time:</label>
+                <input type="text" id="burstTime" name="burstTime" required>
+                <label for="Select_Process">Select Algorithm:</label>
+                <select id="Select_Process">
+                    <option>FCFS</option>
+                    <option>Round Robin</option>
+                    <option>SJF</option>
+                    <option>SRTF</option>
+                    <option>Priority</option>
+                </select>
+                <input type="text" id="tq" placeholder="Time Quantum" style="display: none;">
+                <select id="AlgoType" style="display: none;">
+                    <option>Non-Preemptive</option>
+                    <option>Preemptive</option>
+                </select>
+            </div>
+            <button type="submit" class="add-process-button">Add Process</button>
+        </form>
+        <table id="processTable">
+            <thead>
+                <tr>
+                    <th id="Priority_table" style="display: none;">Priority</th>
+                    <th>Process Name</th>
+                    <th>Arrival Time</th>
+                    <th>Burst Time</th>
+                    <th>Finish Time</th>
+                    <th>Turn Around Time</th>
+                    <th>Waiting Time</th>
+                    <th>Remove Process</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Process rows will be added dynamically here -->
+            </tbody>
+        </table>
+        <h1>Gantt Chart</h1>
+        <div>
+            <ul id="Gantt_Chart">
+
+            </ul>
+            <ul id="Gantt_Chart1">
+
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Add your JavaScript code here
+        const addProcessForm = document.getElementById('addProcessForm');
+        const processTable = document.getElementById('processTable');
+        Processes=[];
+        Processes2=[];
+        function CreateChart()
+        {
+            while (processTable.rows.length > 1) {
+                processTable.deleteRow(1);
+            }
+            // e.preventDefault();
+            Processes2=JSON.parse(JSON.stringify(Processes));
+            //console.log(Processes2);
+            const algoType = document.getElementById('Select_Process').value;
+            if(algoType === "FCFS")
+            {
+                FCFS(Processes2);
+            }
+            else if(algoType === "Round Robin")
+            {
+                RoundRobin(Processes2,parseInt(document.getElementById("tq").value));
+            }
+            else if(algoType === "SJF")
+            {
+                SJF(Processes2);
+            }
+            else if(algoType === "SRTF")
+            {
+                SRTF(Processes2);
+            }
+            else
+            {
+                if(document.getElementById('AlgoType').value === "Non-Preemptive")
+                {
+                    PriorityNPrem(Processes2);
+                }
+                else
+                {
+                    PriorityPrem(Processes2);
+                }
+            }
+        }
+
+        document.getElementById('Select_Process').addEventListener('change',CreateChart);
+        document.getElementById('tq').addEventListener('input',CreateChart);
+        document.getElementById('AlgoType').addEventListener('input',CreateChart);
+        addProcessForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const processName = document.getElementById('processName').value;
+            var arrivalTime = document.getElementById('arrivalTime').value;
+            arrivalTime=parseInt(arrivalTime);
+            var burstTime = document.getElementById('burstTime').value;
+            burstTime=parseInt(burstTime);
+            const algoType = document.getElementById('Select_Process').value;
+            var algoType2;
+            //console.log(burstTime);
+            if(algoType!=='Priority')
+            {
+                var process = {
+                    name: processName,
+                    arrival: arrivalTime,
+                    burst: burstTime,
+                    fburst: burstTime,
+                    priority: 0,
+                };
+                Processes.push(process);
+            }
+            else
+            {
+                priority=parseInt(document.getElementById("Priority").value);
+                algoType2=document.getElementById('AlgoType').value;
+                var process = {
+                    name: processName,
+                    arrival: arrivalTime,
+                    burst: burstTime,
+                    fburst: burstTime,
+                    priority: priority,
+                };
+                Processes.push(process);
+            }
+            CreateChart();
+            // console.log(Processes);
+            
+            // addProcessToTable(processName, arrivalTime, burstTime);
+            addProcessForm.reset();
+            document.getElementById('Select_Process').value=algoType;
+            if(algoType==='Priority')
+            {
+                document.getElementById('AlgoType').value=algoType2;
+            }
+        });
+
+        // Function to add a process to the table
+        function addProcessToTable(priority,processName, arrivalTime, burstTime,FT,TAT,WT) {
+            if(document.getElementById('Select_Process').value !== 'Priority')
+            {
+                const row = processTable.insertRow();
+                row.innerHTML = `
+                    <td>${processName}</td>
+                    <td>${arrivalTime}</td>
+                    <td>${burstTime}</td>
+                    <td>${FT}</td>
+                    <td>${TAT}</td>
+                    <td>${WT}</td>
+                    <td><button class="deleteBtn">Delete</button></td>
+                `;
+                if(processName!=="")
+                {
+                    const deleteBtn = row.querySelector('.deleteBtn');
+                    deleteBtn.addEventListener('click', function() {
+                        const processName = row.cells[0].textContent;
+                        const arrivalTime = parseInt(row.cells[1].textContent);
+                        const burstTime = parseInt(row.cells[2].textContent);
+                        Processes = Processes.filter(process => {
+                            return !(process.name === processName && process.arrival === arrivalTime && process.burst === burstTime);
+                        });
+                        row.remove();
+                        CreateChart();
+                    });
+                }
+                else
+                {
+                    row.cells[6].textContent="";
+                }
+            }
+            else
+            {       
+                const row = processTable.insertRow();
+                row.innerHTML = `
+                    <td>${priority}</td>
+                    <td>${processName}</td>
+                    <td>${arrivalTime}</td>
+                    <td>${burstTime}</td>
+                    <td>${FT}</td>
+                    <td>${TAT}</td>
+                    <td>${WT}</td>
+                    <td><button class="deleteBtn">Delete</button></td>
+                `;
+                if(processName!=="")
+                {
+                    const deleteBtn = row.querySelector('.deleteBtn');
+                    deleteBtn.addEventListener('click', function() {
+                        const priority = parseInt(row.cells[0].textContent);
+                        const processName = row.cells[1].textContent;
+                        const arrivalTime = parseInt(row.cells[2].textContent);
+                        const burstTime = parseInt(row.cells[3].textContent);
+                        Processes = Processes.filter(process => {
+                            return !(process.priority === priority && process.name === processName && process.arrival === arrivalTime && process.burst === burstTime);
+                        });
+                        row.remove();
+                        CreateChart();
+                    });
+                }
+                else
+                {
+                    row.cells[7].textContent="";
+                }
+            }
+        }
+
+        document.getElementById('Select_Process').addEventListener('change', function () {
+            var TQ=document.getElementById('tq');
+            var priority=document.getElementById('Priority');
+            var label_p=document.getElementById('label_p');
+            var table=document.getElementById('Priority_table');
+            if(this.value === 'Round Robin') 
+            {
+                TQ.value=1;
+                TQ.style.display='inline-block';
+                TQ.required=true;
+            }
+            else
+            {
+                TQ.style.display='none';
+                TQ.required=false;
+            }
+            if(this.value === 'Priority')
+            {
+                document.getElementById('AlgoType').style.display='inline-block';
+                table.style.display='inline-block';
+                label_p.style.display='inline-block';
+                priority.style.display='inline-block';
+                priority.required=true;
+            }
+            else
+            {
+                document.getElementById('AlgoType').style.display='none';
+                table.style.display='none';
+                label_p.style.display='none';
+                priority.style.display='none';
+                priority.required=false;
+            }
+        });
+
+    </script>
+    <script src="FCFS.js"></script>
+    <script src="RoundRobin.js"></script>
+    <script src="SJF.js"></script>
+    <script src="SRTF.js"></script>
+    <script src="Priority.js"></script>
+</body>
+</html>
