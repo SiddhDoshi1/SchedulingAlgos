@@ -23,6 +23,7 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            overflow: auto; /* Add scroll bar when needed */
         }
         h1 {
             text-align: center;
@@ -299,13 +300,17 @@
             }
             CreateChart();
             // console.log(Processes);
-            
+            var TQ=document.getElementById('tq').value;
             // addProcessToTable(processName, arrivalTime, burstTime);
             addProcessForm.reset();
             document.getElementById('Select_Process').value=algoType;
             if(algoType==='Priority')
             {
                 document.getElementById('AlgoType').value=algoType2;
+            }
+            if(algoType==='Round Robin')
+            {
+                document.getElementById('tq').value=TQ;
             }
         });
 
