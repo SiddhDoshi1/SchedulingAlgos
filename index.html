@@ -163,15 +163,15 @@
         <form id="addProcessForm">
             <div class="form-row">
                 <label for="Priority" id="label_p" style="display: none;">Priority:</label>
-                <input type="text" id="Priority" style="display: none;">
+                <input type="number" id="Priority" style="display: none;">
                 <label for="processName">Process Name:</label>
                 <input type="text" id="processName" name="processName" required>
                 <label for="arrivalTime">Arrival Time:</label>
-                <input type="text" id="arrivalTime" name="arrivalTime" required>
+                <input type="number" id="arrivalTime" name="arrivalTime" required>
             </div>
             <div class="form-row">
                 <label for="burstTime">Burst Time:</label>
-                <input type="text" id="burstTime" name="burstTime" required>
+                <input type="number" id="burstTime" name="burstTime" required>
                 <label for="Select_Process">Select Algorithm:</label>
                 <select id="Select_Process">
                     <option>FCFS</option>
@@ -180,7 +180,7 @@
                     <option>SRTF</option>
                     <option>Priority</option>
                 </select>
-                <input type="text" id="tq" placeholder="Time Quantum" style="display: none;">
+                <input type="number" id="tq" placeholder="Time Quantum" style="display: none;">
                 <select id="AlgoType" style="display: none;">
                     <option>Non-Preemptive</option>
                     <option>Preemptive</option>
@@ -202,7 +202,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Process rows will be added dynamically here -->
+                
             </tbody>
         </table>
         <h1>Gantt Chart</h1>
@@ -217,7 +217,7 @@
     </div>
 
     <script>
-        // Add your JavaScript code here
+        const proname = new Map();
         const addProcessForm = document.getElementById('addProcessForm');
         const processTable = document.getElementById('processTable');
         Processes=[];
@@ -263,10 +263,19 @@
         document.getElementById('Select_Process').addEventListener('change',CreateChart);
         document.getElementById('tq').addEventListener('input',CreateChart);
         document.getElementById('AlgoType').addEventListener('input',CreateChart);
+
         addProcessForm.addEventListener('submit', function(e) {
             e.preventDefault();
-
             const processName = document.getElementById('processName').value;
+            if(proname.get(processName))
+            {
+                alert("Process name already taken.Please choose a different name.");
+                return;
+            }   
+            else
+            {
+                proname.set(processName,1);
+            }
             var arrivalTime = document.getElementById('arrivalTime').value;
             arrivalTime=parseInt(arrivalTime);
             var burstTime = document.getElementById('burstTime').value;
@@ -314,7 +323,6 @@
             }
         });
 
-        // Function to add a process to the table
         function addProcessToTable(priority,processName, arrivalTime, burstTime,FT,TAT,WT) {
             if(document.getElementById('Select_Process').value !== 'Priority')
             {
@@ -333,6 +341,7 @@
                     const deleteBtn = row.querySelector('.deleteBtn');
                     deleteBtn.addEventListener('click', function() {
                         const processName = row.cells[0].textContent;
+                        proname.delete(processName);
                         const arrivalTime = parseInt(row.cells[1].textContent);
                         const burstTime = parseInt(row.cells[2].textContent);
                         Processes = Processes.filter(process => {
