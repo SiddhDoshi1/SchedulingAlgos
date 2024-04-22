@@ -163,15 +163,15 @@
         <form id="addProcessForm">
             <div class="form-row">
                 <label for="Priority" id="label_p" style="display: none;">Priority:</label>
-                <input type="number" id="Priority" style="display: none;">
+                <input type="number" id="Priority" style="display: none;" min="1">
                 <label for="processName">Process Name:</label>
                 <input type="text" id="processName" name="processName" required>
                 <label for="arrivalTime">Arrival Time:</label>
-                <input type="number" id="arrivalTime" name="arrivalTime" required>
+                <input type="number" id="arrivalTime" name="arrivalTime" min="1" required>
             </div>
             <div class="form-row">
                 <label for="burstTime">Burst Time:</label>
-                <input type="number" id="burstTime" name="burstTime" required>
+                <input type="number" id="burstTime" name="burstTime" min="1" required>
                 <label for="Select_Process">Select Algorithm:</label>
                 <select id="Select_Process">
                     <option>FCFS</option>
@@ -180,7 +180,7 @@
                     <option>SRTF</option>
                     <option>Priority</option>
                 </select>
-                <input type="number" id="tq" placeholder="Time Quantum" style="display: none;">
+                <input type="number" id="tq" placeholder="Time Quantum" style="display: none;" min="1">
                 <select id="AlgoType" style="display: none;">
                     <option>Non-Preemptive</option>
                     <option>Preemptive</option>
