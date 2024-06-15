@@ -24,7 +24,7 @@ function SJF(Processes){
             Gantt_Chart.appendChild(li1);
             currtime=Processes[index].arrival;
             li2.textContent=currtime;
-            li1.style.backgroundColor='red';
+            li2.style.backgroundColor='red';
             Gantt_Chart1.appendChild(li2);
         }
         else
