@@ -16,4 +16,4 @@ This project is a dynamic website that simulates processes using various schedul
 - User-friendly interface with options to simulate and analyze different scenarios.
 
 ## Usage
--Website :  [Website](https://siddhdoshi1.github.io/SchedulingAlgos/)
+-Website :  [SchedulingAlgos](https://siddhdoshi1.github.io/SchedulingAlgos/)
